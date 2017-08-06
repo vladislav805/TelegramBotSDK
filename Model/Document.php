@@ -20,7 +20,7 @@
 		protected $size;
 
 		public function __construct($d) {
-			$this->fileId = $d->fileId;
+			$this->fileId = $d->file_id;
 			$this->thumbnail = $d->thumb;
 			$this->name = $d->file_name;
 			$this->mime = $d->mime_type;

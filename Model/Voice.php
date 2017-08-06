@@ -21,7 +21,7 @@
 		 * @param $d
 		 */
 		public function __construct($d) {
-			$this->fileId = $d->fileId;
+			$this->fileId = $d->file_id;
 			$this->duration = $d->duration;
 			$this->mime = $d->mime_type;
 			$this->size = $d->file_size;
