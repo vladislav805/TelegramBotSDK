@@ -246,7 +246,7 @@
 		 * @param string $type
 		 * @param array $data
 		 */
-		private function log($type, $data) {
+		public function log($type, $data) {
 			if (!$this->mLogFile) {
 				return;
 			}
