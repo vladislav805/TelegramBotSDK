@@ -17,7 +17,7 @@
 		/**
 		 * @var mixed|null
 		 */
-		protected $replyMarkUp;
+		protected $replyMarkUp = null;
 
 		/**
 		 * @var string

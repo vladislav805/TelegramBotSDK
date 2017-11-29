@@ -74,7 +74,7 @@
 			if ($this->mLogMode & self::LOG_MODE_API_RESULT) {
 				$this->log("API", [
 					"Method" => $method,
-					"Params" => $parameters,
+					"Params" => http_build_query($parameters),
 					"Response" => $response
 				]);
 			}
