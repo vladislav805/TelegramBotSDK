@@ -59,6 +59,7 @@
 			$this->date = $d->date;
 
 			isset($d->text) && ($this->text = $d->text);
+			isset($d->caption) && ($this->text = $d->caption);
 
 			isset($d->photo) && ($this->photo = array_map(function($p) { return new PhotoSize($p); }, $d->photo));
 			isset($d->document) && ($this->document = new Document($d->document));
