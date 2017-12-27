@@ -3,8 +3,14 @@
 	namespace Telegram\Model;
 
 	use JsonSerializable;
+	use stdClass;
 
 	class Chat implements JsonSerializable {
+
+		const TYPE_USER = "private";
+		const TYPE_GROUP = "group";
+		const TYPE_SUPERGROUP = "supergroup";
+		const TYPE_CHANNEL = "channel";
 
 		/** @var int */
 		protected $id;
@@ -26,7 +32,7 @@
 
 		/**
 		 * User constructor.
-		 * @param \stdClass $d
+		 * @param stdClass $d
 		 */
 		public function __construct($d) {
 			$this->id = $d->id;
@@ -71,6 +77,20 @@
 		 */
 		public function getUsername() {
 			return $this->username;
+		}
+
+		/**
+		 * @return string
+		 */
+		public function getType() {
+			return $this->type;
+		}
+
+		/**
+		 * @return string
+		 */
+		public function getLanguageCode() {
+			return $this->languageCode;
 		}
 
 		/**
