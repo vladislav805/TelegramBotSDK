@@ -28,7 +28,7 @@
 		/** @var Voice */
 		protected $voice;
 
-		/** @var array[] */
+		/** @var MessageEntity[] */
 		protected $entities;
 
 		/** @var Sticker */
@@ -69,6 +69,12 @@
 				$this->forwardFrom = new Chat($d->forward_from_chat);
 				$this->forwardDate = $d->forward_date;
 			}
+
+			$this->entities = isset($d->entities)
+				? array_map(function($e) {
+					return new MessageEntity($e, $this);
+				  }, $d->entities)
+				: [];
 
 			isset($d->reply_to_message) && ($this->replyToMessage = new Message($d->reply_to_message));
 
@@ -140,10 +146,24 @@
 		}
 
 		/**
-		 * @return Document
+		 * @return boolean
 		 */
-		public function getDocument() {
-			return $this->document;
+		public function isCommand() {
+			return sizeOf($this->entities) &&
+				$this->entities[0]->getOffset() === 0 &&
+				$this->entities[0]->getType() === MessageEntity::TYPE_BOT_COMMAND;
+		}
+
+		/**
+		 * @param int $index
+		 * @return MessageEntity|null
+		 */
+		public function getTextEntity($index) {
+			if ($index < 0 || sizeOf($this->entities) <= $index) {
+				return null;
+			}
+
+			return $this->entities[$index];
 		}
 
 		/**
@@ -179,6 +199,13 @@
 		 */
 		public function getPhoto() {
 			return $this->photo;
+		}
+
+		/**
+		 * @return Document
+		 */
+		public function getDocument() {
+			return $this->document;
 		}
 
 		/**
