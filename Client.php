@@ -66,8 +66,13 @@
 			curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 5);
 			curl_setopt($handle, CURLOPT_TIMEOUT, 60);
-			curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($parameters));
-			curl_setopt($handle, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+			curl_setopt($handle, CURLOPT_POST, 1);
+			if ($this->hasFile($parameters)) {
+				curl_setopt($handle, CURLOPT_POSTFIELDS, $parameters);
+			} else {
+				curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($parameters));
+				curl_setopt($handle, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+			}
 
 			$response = curl_exec($handle);
 
@@ -105,7 +110,7 @@
 		}
 
 		/**
-		 * Call metod as webhook
+		 * Call method as webhook
 		 * @param string $method
 		 * @param array $parameters
 		 * @return boolean
@@ -119,6 +124,10 @@
 				$parameters = [];
 			} else if (!is_array($parameters)) {
 				throw new InvalidParamException("Parameters must be an array");
+			}
+
+			if ($this->hasFile($parameters)) {
+				throw new InvalidParamException("File can not be sent on webhook");
 			}
 
 			$parameters["method"] = $method;
@@ -145,6 +154,20 @@
 		 */
 		public function performHookMethod(BaseMethod $action) {
 			$this->callHookMethod($action->getMethod(), $action->getParams());
+		}
+
+		/**
+		 * Checks if params contains file. Check for multipart/form-data enable.
+		 * @param array $params
+		 * @return boolean
+		 */
+		private function hasFile($params) {
+			foreach ($params as $value) {
+				if ($value && $value instanceof \CURLFile) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		/**
