@@ -68,6 +68,9 @@
 			curl_setopt($handle, CURLOPT_TIMEOUT, 60);
 			curl_setopt($handle, CURLOPT_POST, 1);
 			if ($this->hasFile($parameters)) {
+				if (isset($parameters["reply_markup"])) {
+					$parameters["reply_markup"] = json_encode($parameters["reply_markup"]);
+				}
 				curl_setopt($handle, CURLOPT_POSTFIELDS, $parameters);
 			} else {
 				curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($parameters));
