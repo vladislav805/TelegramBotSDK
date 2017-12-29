@@ -329,8 +329,8 @@
 		 * @param IFile $document
 		 * @return string
 		 */
-		public function getDocumentDownloadUrl(IFile $document) {
-			return sprintf("https://api.telegram.org/file/bot%s/%s", $this->mBotSecret, $document->getFileId());
+		public function getDocumentDownloadUrl($document) {
+			return "https://api.telegram.org/file/bot" . $this->mBotSecret . "/" . $document->getPath();
 		}
 
 	}

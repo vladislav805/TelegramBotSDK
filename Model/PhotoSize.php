@@ -19,6 +19,9 @@
 		/** @var int */
 		protected $fileSize;
 
+		/** @var string */
+		protected $path;
+
 		/**
 		 * PhotoSize constructor.
 		 * @param $d
@@ -28,6 +31,7 @@
 			$this->width = $d->width;
 			$this->height = $d->height;
 			$this->fileSize = $d->file_size;
+			isset($d->file_path) && ($this->path = $d->file_path);
 		}
 
 		/**
@@ -65,4 +69,10 @@
 			return get_object_vars($this);
 		}
 
+		/**
+		 * @return string
+		 */
+		public function getPath() {
+			return $this->path;
+		}
 	}

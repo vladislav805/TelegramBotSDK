@@ -22,12 +22,16 @@
 		/** @var int */
 		protected $size;
 
+		/** @var string */
+		protected $path;
+
 		public function __construct($d) {
 			$this->fileId = $d->file_id;
 			$this->thumbnail = $d->thumb;
 			$this->name = $d->file_name;
 			$this->mime = $d->mime_type;
 			$this->size = $d->file_size;
+			isset($d->file_path) && ($this->path = $d->file_path);
 		}
 
 		/**
@@ -78,4 +82,12 @@
 		public function getFileSize() {
 			return $this->size;
 		}
+
+		/**
+		 * @return string
+		 */
+		public function getPath() {
+			return $this->path;
+		}
+
 	}
