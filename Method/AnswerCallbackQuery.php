@@ -43,7 +43,7 @@
 		/**
 		 * @return int
 		 */
-		public function getCacheTime(): int {
+		public function getCacheTime() {
 			return $this->cacheTime;
 		}
 
