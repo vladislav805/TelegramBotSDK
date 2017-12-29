@@ -2,7 +2,10 @@
 
 	namespace Telegram\Model;
 
-	class PhotoSize implements \JsonSerializable {
+	use JsonSerializable;
+	use Telegram\IFile;
+
+	class PhotoSize implements IFile, JsonSerializable {
 
 		/** @var string */
 		protected $fileId;

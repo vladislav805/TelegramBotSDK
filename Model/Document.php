@@ -2,7 +2,10 @@
 
 	namespace Telegram\Model;
 
-	class Document implements \JsonSerializable {
+	use JsonSerializable;
+	use Telegram\IFile;
+
+	class Document implements IFile, JsonSerializable {
 
 		/** @var string */
 		protected $fileId;
@@ -69,4 +72,10 @@
 			return get_object_vars($this);
 		}
 
+		/**
+		 * @return int
+		 */
+		public function getFileSize() {
+			return $this->size;
+		}
 	}

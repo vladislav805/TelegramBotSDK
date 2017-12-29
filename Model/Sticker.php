@@ -2,7 +2,9 @@
 
 	namespace Telegram\Model;
 
-	class Sticker extends PhotoSize {
+	use Telegram\IFile;
+
+	class Sticker extends PhotoSize implements IFile {
 
 		/** @var PhotoSize */
 		protected $thumbnail;
