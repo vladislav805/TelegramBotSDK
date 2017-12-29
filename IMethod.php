@@ -1,6 +1,6 @@
 <?
 
-	namespace Telegram\Model;
+	namespace Telegram;
 
 	interface IMethod {
 

@@ -44,13 +44,15 @@
 
 		/**
 		 * Call method as HTTP-request
-		 * @param string $method
-		 * @param array $parameters
+		 * @param IMethod $method
 		 * @return stdClass|boolean
 		 * @throws Exception
 		 */
-		private function callSingleMethod($method, $parameters) {
-			if (!is_string($method)) {
+		private function callSingleMethod($method) {
+
+			$parameters = $method->getParams();
+
+			if (!is_string($method->getMethod())) {
 				throw new InvalidParamException("Method name must be a string");
 			};
 
@@ -60,7 +62,7 @@
 				throw new InvalidParamException("Parameters must be an array");
 			}
 
-			$parameters["method"] = $method;
+			$parameters["method"] = $method->getMethod();
 
 			$handle = curl_init($this->mApiUrl);
 			curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
@@ -81,7 +83,7 @@
 
 			if ($this->mLogMode & self::LOG_MODE_API_RESULT) {
 				$this->log("API", [
-					"Method" => $method,
+					"Method" => $method->getMethod(),
 					"Params" => http_build_query($parameters),
 					"Response" => $response
 				]);
@@ -109,17 +111,19 @@
 				throw new ErrorException(json_encode($response));
 			}
 
-			return $response->result;
+			return $method instanceof IMethodParsable
+				? $method->parseResponse($response->result)
+				: $response->result;
 		}
 
 		/**
 		 * Call method as webhook
-		 * @param string $method
-		 * @param array $parameters
+		 * @param IMethod $method
 		 * @return boolean
 		 */
-		private function callHookMethod($method, $parameters) {
-			if (!is_string($method)) {
+		private function callHookMethod($method) {
+			$parameters = $method->getParams();
+			if (!is_string($method->getMethod())) {
 				throw new InvalidParamException("Method name must be a string");
 			}
 
@@ -133,7 +137,7 @@
 				throw new InvalidParamException("File can not be sent on webhook");
 			}
 
-			$parameters["method"] = $method;
+			$parameters["method"] = $method->getMethod();
 
 			header("Content-Type: application/json");
 			echo json_encode($parameters);
@@ -147,7 +151,7 @@
 		 * @throws Exception
 		 */
 		public function performSingleMethod(BaseMethod $action) {
-			return $this->callSingleMethod($action->getMethod(), $action->getParams());
+			return $this->callSingleMethod($action);
 		}
 
 		/**
@@ -156,7 +160,7 @@
 		 * @return void
 		 */
 		public function performHookMethod(BaseMethod $action) {
-			$this->callHookMethod($action->getMethod(), $action->getParams());
+			$this->callHookMethod($action);
 		}
 
 		/**
@@ -318,6 +322,15 @@
 			}
 
 			fclose($fh);
+		}
+
+		/**
+		 * Make link for download document
+		 * @param IFile $document
+		 * @return string
+		 */
+		public function getDocumentDownloadUrl(IFile $document) {
+			return sprintf("https://api.telegram.org/file/bot%s/%s", $this->mBotSecret, $document->getFileId());
 		}
 
 	}
