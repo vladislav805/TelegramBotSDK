@@ -1,7 +1,10 @@
 <?
 	namespace Telegram\Method;
 
-	class GetFile extends BaseMethod {
+	use Telegram\IMethodParsable;
+	use Telegram\Model\Document;
+
+	class GetFile extends BaseMethod implements IMethodParsable {
 
 		private $fileId;
 
@@ -18,4 +21,12 @@
 			return [ "file_id" => $this->fileId ];
 		}
 
+		/**
+		 * Parse response from API to objects
+		 * @param object $result
+		 * @return mixed
+		 */
+		public function parseResponse($result) {
+			return new Document($result);
+		}
 	}
