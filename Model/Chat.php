@@ -97,12 +97,7 @@
 		 * @return array
 		 */
 		public function jsonSerialize() {
-			return [
-				"id" => $this->id,
-				"first_name" => $this->firstName,
-				"last_name" => $this->lastName,
-				"username" => $this->username
-			];
+			return get_object_vars($this);
 		}
 
 		/**

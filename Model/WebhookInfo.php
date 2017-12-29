@@ -4,7 +4,7 @@
 
 	use stdClass;
 
-	class WebhookInfo {
+	class WebhookInfo implements \JsonSerializable {
 
 		/** @var string */
 		private $url;
@@ -70,6 +70,13 @@
 		 */
 		public function getMaxConnections() {
 			return $this->maxConnections;
+		}
+
+		/**
+		 * @return array
+		 */
+		public function jsonSerialize() {
+			return get_object_vars($this);
 		}
 
 	}

@@ -2,7 +2,7 @@
 
 	namespace Telegram\Model;
 
-	class Document {
+	class Document implements \JsonSerializable {
 
 		/** @var string */
 		protected $fileId;
@@ -60,6 +60,13 @@
 		 */
 		public function getThumbnail() {
 			return $this->thumbnail;
+		}
+
+		/**
+		 * @return array
+		 */
+		public function jsonSerialize() {
+			return get_object_vars($this);
 		}
 
 	}

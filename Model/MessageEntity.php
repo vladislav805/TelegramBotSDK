@@ -2,7 +2,7 @@
 
 	namespace Telegram\Model;
 
-	class MessageEntity {
+	class MessageEntity implements \JsonSerializable {
 
 		const TYPE_BOT_COMMAND = "bot_command";
 		const TYPE_MENTION = "mention";
@@ -79,6 +79,13 @@
 		 */
 		public function getData() {
 			return $this->data;
+		}
+
+		/**
+		 * @return array
+		 */
+		public function jsonSerialize() {
+			return get_object_vars($this);
 		}
 
 	}

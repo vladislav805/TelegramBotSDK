@@ -2,7 +2,7 @@
 
 	namespace Telegram\Model;
 
-	class PhotoSize {
+	class PhotoSize implements \JsonSerializable {
 
 		/** @var string */
 		protected $fileId;
@@ -53,6 +53,13 @@
 		 */
 		public function getFileSize() {
 			return $this->fileSize;
+		}
+
+		/**
+		 * @return array
+		 */
+		public function jsonSerialize() {
+			return get_object_vars($this);
 		}
 
 	}

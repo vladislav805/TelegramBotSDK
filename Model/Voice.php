@@ -2,7 +2,7 @@
 
 	namespace Telegram\Model;
 
-	class Voice {
+	class Voice implements \JsonSerializable {
 
 		/** @var string */
 		protected $fileId;
@@ -53,6 +53,13 @@
 		 */
 		public function getMime() {
 			return $this->mime;
+		}
+
+		/**
+		 * @return array
+		 */
+		public function jsonSerialize() {
+			return get_object_vars($this);
 		}
 
 	}

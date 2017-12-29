@@ -2,7 +2,7 @@
 
 	namespace Telegram\Model;
 
-	class Message {
+	class Message implements \JsonSerializable {
 
 		/** @var int */
 		protected $id;
@@ -229,4 +229,10 @@
 			return $this->replyToMessage;
 		}
 
+		/**
+		 * @return array
+		 */
+		public function jsonSerialize() {
+			return get_object_vars($this);
+		}
 	}
