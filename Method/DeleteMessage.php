@@ -1,7 +1,7 @@
 <?
 	namespace Telegram\Method;
 
-	class DeleteMessage {
+	class DeleteMessage extends BaseMethod {
 
 		private $chatId;
 		private $messageId;
