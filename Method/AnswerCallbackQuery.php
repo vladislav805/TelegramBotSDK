@@ -1,7 +1,7 @@
 <?
 	namespace Telegram\Method;
 
-	class AnswerCallbackQuery {
+	class AnswerCallbackQuery extends BaseMethod {
 
 		/** @var string */
 		private $queryId;
