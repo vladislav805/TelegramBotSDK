@@ -31,6 +31,7 @@
 
 		const TYPE_MESSAGE = "MSG";
 		const TYPE_CALLBACK = "CQR";
+		const TYPE_INLINE = "CIR";
 		const TYPE_RAW = "RAW";
 
 		/**
@@ -253,6 +254,28 @@
 					"FN/LN" => $query->getFrom()->getFirstName() . " ! " . $query->getFrom()->getLastName(),
 					"Date" => date("d.m H:i:s"),
 					"Data" => $query->getData()
+				]);
+			}
+
+			return true;
+		}
+
+		/**
+		 * Set listener for inline query
+		 * @param callable $callable
+		 * @return boolean
+		 * @throws Exception
+		 */
+		public function onInlineQuery($callable) {
+			$this->read();
+
+			if (isset($this->mData->inline_query)) {
+				$query = new Model\InlineQuery($this->mData->inline_query);
+				$callable($this, $query);
+				($this->mLogMode & self::LOG_MODE_CALLBACK_QUERY) && $this->log(self::TYPE_INLINE, [
+					"From" => "@" . $query->getFrom()->getUsername(),
+					"FN/LN" => $query->getFrom()->getFirstName() . " ! " . $query->getFrom()->getLastName(),
+					"Query" => $query->getQuery()
 				]);
 			}
 
