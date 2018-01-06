@@ -2,7 +2,9 @@
 
 	namespace Telegram\Method;
 
-	class EditMessageReplyMarkup extends EditMessageText {
+	use Telegram\IMethodParsable;
+
+	class EditMessageReplyMarkup extends EditMessageText implements IMethodParsable {
 
 		public function __construct($chatId, $messageId, $markup) {
 			parent::__construct($chatId, $messageId, null);

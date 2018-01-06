@@ -2,7 +2,10 @@
 
 	namespace Telegram\Method;
 
-	class SendMessage extends SendMethod {
+	use Telegram\IMethodParsable;
+	use Telegram\Model\Object\Message;
+
+	class SendMessage extends SendMethod implements IMethodParsable {
 
 		public function __construct($chatId, $text = null) {
 			parent::__construct($chatId, $text);
@@ -30,4 +33,12 @@
 			return $res;
 		}
 
+		/**
+		 * Parse response from API to objects
+		 * @param object $result
+		 * @return Message
+		 */
+		public function parseResponse($result) {
+			return new Message($result->result);
+		}
 	}
