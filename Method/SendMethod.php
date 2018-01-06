@@ -2,6 +2,8 @@
 
 	namespace Telegram\Method;
 
+	use Telegram\IKeyboard;
+
 	abstract class SendMethod extends BaseMethod {
 
 		/**
@@ -15,7 +17,7 @@
 		protected $text;
 
 		/**
-		 * @var mixed|null
+		 * @var IKeyboard|null
 		 */
 		protected $replyMarkUp = null;
 
@@ -88,7 +90,7 @@
 		}
 
 		/**
-		 * @param mixed $data
+		 * @param IKeyboard $data
 		 * @return $this
 		 */
 		public function setReplyMarkup($data) {
@@ -97,7 +99,7 @@
 		}
 
 		/**
-		 * @return mixed
+		 * @return IKeyboard
 		 */
 		public function getReplyMarkup() {
 			return $this->replyMarkUp;
