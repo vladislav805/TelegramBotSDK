@@ -6,9 +6,16 @@
 
 	abstract class Chat implements JsonSerializable {
 
+		/** @deprecated  */
 		const TYPE_USER = "private";
+
+		/** @deprecated  */
 		const TYPE_GROUP = "group";
+
+		/** @deprecated  */
 		const TYPE_SUPERGROUP = "supergroup";
+
+		/** @deprecated  */
 		const TYPE_CHANNEL = "channel";
 
 		/** @var int */
@@ -83,6 +90,7 @@
 		}
 
 		/**
+		 * @deprecated
 		 * @return string
 		 */
 		public function getType() {
