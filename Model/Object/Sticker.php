@@ -1,6 +1,6 @@
 <?
 
-	namespace Telegram\Model;
+	namespace Telegram\Model\Object;
 
 	use Telegram\IFile;
 

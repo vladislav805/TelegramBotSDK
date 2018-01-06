@@ -1,6 +1,8 @@
 <?
 
-	namespace Telegram\Model;
+	namespace Telegram\Model\Response;
+
+	use Telegram\Model\Chat;
 
 	class InlineQuery {
 
@@ -24,7 +26,7 @@
 		public function __construct($q) {
 			$this->queryId = $q->id;
 			$this->query = $q->query;
-			$this->from = new Chat($q->from);
+			$this->from = Chat::parse($q->from);
 			$this->offset = $q->offset;
 		}
 

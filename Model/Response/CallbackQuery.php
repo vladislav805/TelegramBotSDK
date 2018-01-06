@@ -1,6 +1,9 @@
 <?
 
-	namespace Telegram\Model;
+	namespace Telegram\Model\Response;
+
+	use Telegram\Model\Chat;
+	use Telegram\Model\Object\Message;
 
 	class CallbackQuery {
 
@@ -28,7 +31,7 @@
 			$this->queryId = $q->id;
 			$this->data = $q->data;
 			$this->chatInstance = $q->chat_instance;
-			$this->from = new Chat($q->from);
+			$this->from = Chat::parse($q->from);
 			$this->message = new Message($q->message);
 		}
 

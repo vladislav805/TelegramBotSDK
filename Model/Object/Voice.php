@@ -1,20 +1,18 @@
 <?
 
-	namespace Telegram\Model;
+	namespace Telegram\Model\Object;
 
 	use JsonSerializable;
+	use RuntimeException;
 	use Telegram\IFile;
 
-	class Document implements IFile, JsonSerializable {
+	class Voice implements IFile, JsonSerializable {
 
 		/** @var string */
 		protected $fileId;
 
-		/** @var PhotoSize */
-		protected $thumbnail;
-
-		/** @var string */
-		protected $name;
+		/** @var int */
+		protected $duration;
 
 		/** @var string */
 		protected $mime;
@@ -22,16 +20,15 @@
 		/** @var int */
 		protected $size;
 
-		/** @var string */
-		protected $path;
-
+		/**
+		 * Voice constructor.
+		 * @param $d
+		 */
 		public function __construct($d) {
 			$this->fileId = $d->file_id;
-			$this->thumbnail = $d->thumb;
-			$this->name = $d->file_name;
+			$this->duration = $d->duration;
 			$this->mime = $d->mime_type;
 			$this->size = $d->file_size;
-			isset($d->file_path) && ($this->path = $d->file_path);
 		}
 
 		/**
@@ -42,10 +39,10 @@
 		}
 
 		/**
-		 * @return string
+		 * @return int
 		 */
-		public function getName() {
-			return $this->name;
+		public function getDuration() {
+			return $this->duration;
 		}
 
 		/**
@@ -60,13 +57,6 @@
 		 */
 		public function getMime() {
 			return $this->mime;
-		}
-
-		/**
-		 * @return PhotoSize
-		 */
-		public function getThumbnail() {
-			return $this->thumbnail;
 		}
 
 		/**
@@ -87,7 +77,6 @@
 		 * @return string
 		 */
 		public function getPath() {
-			return $this->path;
+			throw new RuntimeException();
 		}
-
 	}

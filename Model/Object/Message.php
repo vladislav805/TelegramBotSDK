@@ -1,8 +1,11 @@
 <?
 
-	namespace Telegram\Model;
+	namespace Telegram\Model\Object;
 
-	class Message implements \JsonSerializable {
+	use JsonSerializable;
+	use Telegram\Model\Chat;
+
+	class Message implements JsonSerializable {
 
 		/** @var int */
 		protected $id;
@@ -54,8 +57,8 @@
 
 		public function __construct($d) {
 			$this->id = $d->message_id;
-			$this->from = new Chat($d->from);
-			$this->chat = new Chat($d->chat);
+			$this->from = Chat::parse($d->from);
+			$this->chat = Chat::parse($d->chat);
 			$this->date = $d->date;
 
 			isset($d->text) && ($this->text = $d->text);
@@ -66,7 +69,7 @@
 			isset($d->sticker) && ($this->sticker = new Sticker($d->sticker));
 
 			if (isset($d->forward_from_chat))  {
-				$this->forwardFrom = new Chat($d->forward_from_chat);
+				$this->forwardFrom = Chat::parse($d->forward_from_chat);
 				$this->forwardDate = $d->forward_date;
 			}
 
@@ -78,8 +81,8 @@
 
 			isset($d->reply_to_message) && ($this->replyToMessage = new Message($d->reply_to_message));
 
-			isset($d->new_chat_member) && ($this->newChatMember = new Chat($d->new_chat_member));
-			isset($d->left_chat_member) && ($this->leftChatMember = new Chat($d->left_chat_member));
+			isset($d->new_chat_member) && ($this->newChatMember = Chat::parse($d->new_chat_member));
+			isset($d->left_chat_member) && ($this->leftChatMember = Chat::parse($d->left_chat_member));
 		}
 
 		/**

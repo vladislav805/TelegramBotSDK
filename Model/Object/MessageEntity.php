@@ -1,8 +1,11 @@
 <?
 
-	namespace Telegram\Model;
+	namespace Telegram\Model\Object;
 
-	class MessageEntity implements \JsonSerializable {
+	use JsonSerializable;
+	use Telegram\Model\Chat;
+
+	class MessageEntity implements JsonSerializable {
 
 		const TYPE_BOT_COMMAND = "bot_command";
 		const TYPE_MENTION = "mention";
@@ -44,7 +47,7 @@
 					break;
 
 				case "text_mention":
-					$this->data = "@" . (new Chat($e->user))->getUsername();
+					$this->data = "@" . Chat::parse($e->user)->getUsername();
 					break;
 
 				default:

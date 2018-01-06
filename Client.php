@@ -1,11 +1,15 @@
 <?
 	namespace Telegram;
 
+	use CURLFile;
 	use ErrorException;
 	use Exception;
 	use RuntimeException;
 	use stdClass;
 	use Telegram\Method\BaseMethod;
+	use Telegram\Model\Object\Message;
+	use Telegram\Model\Response\CallbackQuery;
+	use Telegram\Model\Response\InlineQuery;
 
 	class Client {
 
@@ -171,7 +175,7 @@
 		 */
 		private function hasFile($params) {
 			foreach ($params as $value) {
-				if ($value && $value instanceof \CURLFile) {
+				if ($value && $value instanceof CURLFile) {
 					return true;
 				}
 			}
@@ -217,7 +221,7 @@
 			$this->read();
 
 			if (isset($this->mData->message)) {
-				$message = new Model\Message($this->mData->message);
+				$message = new Message($this->mData->message);
 				$callable($this, $message);
 				$d = [
 					"Chat" => "@" . $message->getChat()->getUsername() . " (#" . $message->getChat()->getId() . ")",
@@ -247,7 +251,7 @@
 			$this->read();
 
 			if (isset($this->mData->callback_query)) {
-				$query = new Model\CallbackQuery($this->mData->callback_query);
+				$query = new CallbackQuery($this->mData->callback_query);
 				$callable($this, $query);
 				($this->mLogMode & self::LOG_MODE_CALLBACK_QUERY) && $this->log(self::TYPE_CALLBACK, [
 					"From" => "@" . $query->getFrom()->getUsername(),
@@ -270,7 +274,7 @@
 			$this->read();
 
 			if (isset($this->mData->inline_query)) {
-				$query = new Model\InlineQuery($this->mData->inline_query);
+				$query = new InlineQuery($this->mData->inline_query);
 				$callable($this, $query);
 				($this->mLogMode & self::LOG_MODE_CALLBACK_QUERY) && $this->log(self::TYPE_INLINE, [
 					"From" => "@" . $query->getFrom()->getUsername(),

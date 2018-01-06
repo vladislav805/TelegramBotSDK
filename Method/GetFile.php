@@ -2,7 +2,7 @@
 	namespace Telegram\Method;
 
 	use Telegram\IMethodParsable;
-	use Telegram\Model\Document;
+	use Telegram\Model\Object\Document;
 
 	class GetFile extends BaseMethod implements IMethodParsable {
 
