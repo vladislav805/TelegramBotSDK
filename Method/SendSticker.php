@@ -16,10 +16,8 @@
 		}
 
 		public function getParams() {
-			$res = [ "chat_id" => $this->chatId, "sticker" => $this->sticker ];
-			if ($this->replyMarkUp) {
-				$res["reply_markup"] = $this->replyMarkUp;
-			}
+			$res = parent::getParams();
+			$res["sticker"] = $this->sticker;
 			return $res;
 		}
 

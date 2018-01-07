@@ -6,30 +6,26 @@
 
 	abstract class SendMethod extends BaseMethod {
 
-		/**
-		 * @var int
-		 */
+		/** @var int */
 		protected $chatId;
 
-		/**
-		 * @var string
-		 */
+		/** @var string */
 		protected $text;
 
-		/**
-		 * @var IKeyboard|null
-		 */
+		/** @var IKeyboard|null */
 		protected $replyMarkUp = null;
 
-		/**
-		 * @var string
-		 */
+		/** @var string */
 		protected $parseMode;
 
-		/**
-		 * @var boolean
-		 */
+		/** @var boolean */
 		protected $disableWebPagePreview = false;
+
+		/** @var boolean */
+		protected $disableNotification = false;
+
+		/** @var int */
+		protected $replyToMessageId = 0;
 
 		/**
 		 * SendMethod constructor.
@@ -119,6 +115,64 @@
 		 */
 		public function getDisableWebPagePreview() {
 			return $this->disableWebPagePreview;
+		}
+
+		/**
+		 * @param boolean $disableNotification
+		 * @return SendMethod
+		 */
+		public function setDisableNotification($disableNotification) {
+			$this->disableNotification = $disableNotification;
+			return $this;
+		}
+
+		/**
+		 * @return boolean
+		 */
+		public function getDisableNotification() {
+			return $this->disableNotification;
+		}
+
+		/**
+		 * @param int $replyToMessageId
+		 * @return SendMethod
+		 */
+		public function setReplyToMessageId($replyToMessageId) {
+			$this->replyToMessageId = $replyToMessageId;
+			return $this;
+		}
+
+		/**
+		 * @return int
+		 */
+		public function getReplyToMessageId() {
+			return $this->replyToMessageId;
+		}
+
+		/**
+		 * @return array
+		 */
+		public function getParams() {
+			$res = [
+				"chat_id" => $this->chatId,
+				$this instanceof SendMessage ? "text" : "caption" => $this->text
+			];
+			if ($this->replyMarkUp) {
+				$res["reply_markup"] = $this->replyMarkUp;
+			}
+			if ($this->parseMode) {
+				$res["parse_mode"] = $this->parseMode;
+			}
+			if ($this->disableWebPagePreview) {
+				$res["disable_web_page_preview"] = $this->disableWebPagePreview;
+			}
+			if ($this->disableNotification) {
+				$res["disable_notification"] = $this->disableNotification;
+			}
+			if ($this->replyToMessageId) {
+				$res["reply_to_message_id"] = $this->replyToMessageId;
+			}
+			return $res;
 		}
 
 	}

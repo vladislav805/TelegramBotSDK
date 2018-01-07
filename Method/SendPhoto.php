@@ -21,10 +21,8 @@
 		}
 
 		public function getParams() {
-			$res = [ "chat_id" => $this->chatId, "photo" => $this->photo, "caption" => $this->text ];
-			if ($this->replyMarkUp) {
-				$res["reply_markup"] = $this->replyMarkUp;
-			}
+			$res = parent::getParams();
+			$res["photo"] = $this->photo;
 			return $res;
 		}
 

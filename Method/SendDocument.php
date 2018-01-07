@@ -20,21 +20,9 @@
 			$this->document = $document;
 		}
 
-		public function getText() {
-			return $this->text;
-		}
-
 		public function getParams() {
-			$res = [ "chat_id" => $this->chatId, "caption" => $this->text, "document" => $this->document ];
-			if ($this->replyMarkUp) {
-				$res["reply_markup"] = $this->replyMarkUp;
-			}
-			if ($this->parseMode) {
-				$res["parse_mode"] = $this->parseMode;
-			}
-			if ($this->disableWebPagePreview) {
-				$res["disable_web_page_preview"]= $this->disableWebPagePreview;
-			}
+			$res = parent::getParams();
+			$res["document"] = $this->document;
 			return $res;
 		}
 
