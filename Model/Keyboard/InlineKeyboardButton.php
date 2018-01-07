@@ -41,7 +41,6 @@
 		 * @return array
 		 */
 		public function jsonSerialize() {
-			error_log("button serialize: " . ($this->text));
 			$d = ["text" => $this->text];
 
 			if ($this->callbackData) {
