@@ -20,6 +20,12 @@
 		/** @var string */
 		private $mApiUrl;
 
+		/**
+		 * Data received from php://input
+		 * @var mixed
+		 */
+		private $mData;
+
 		/** @var Logger|null */
 		private $mLogger = null;
 
@@ -35,13 +41,12 @@
 		}
 
 		/**
-		 * Call method as HTTP-request
-		 * @param IMethod $method
-		 * @return stdClass|boolean
+		 * Perform method as single HTTP-request
+		 * @param BaseMethod $method
+		 * @return stdClass
 		 * @throws Exception
 		 */
-		private function callSingleMethod($method) {
-
+		public function performSingleMethod(BaseMethod $method) {
 			$parameters = $method->getParams();
 
 			if (!is_string($method->getMethod())) {
@@ -104,11 +109,11 @@
 		}
 
 		/**
-		 * Call method as webhook
-		 * @param IMethod $method
-		 * @return boolean
+		 * Perform method as webhook
+		 * @param BaseMethod $method
+		 * @return bool
 		 */
-		private function callHookMethod($method) {
+		public function performHookMethod(BaseMethod $method) {
 			$parameters = $method->getParams();
 			if (!is_string($method->getMethod())) {
 				throw new InvalidParamException("Method name must be a string");
@@ -132,25 +137,6 @@
 		}
 
 		/**
-		 * Perform method as single HTTP-request
-		 * @param BaseMethod $action
-		 * @return stdClass
-		 * @throws Exception
-		 */
-		public function performSingleMethod(BaseMethod $action) {
-			return $this->callSingleMethod($action);
-		}
-
-		/**
-		 * Perform method as webhook
-		 * @param BaseMethod $action
-		 * @return void
-		 */
-		public function performHookMethod(BaseMethod $action) {
-			$this->callHookMethod($action);
-		}
-
-		/**
 		 * Checks if params contains file. Check for multipart/form-data enable.
 		 * @param array $params
 		 * @return boolean
@@ -163,12 +149,6 @@
 			}
 			return false;
 		}
-
-		/**
-		 * Data received from php://input
-		 * @var mixed
-		 */
-		private $mData;
 
 		/**
 		 * Read input stream
