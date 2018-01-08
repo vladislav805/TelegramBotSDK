@@ -3,6 +3,7 @@
 	namespace Telegram\Model\Keyboard;
 
 	use Telegram\IKeyboard;
+	use Telegram\IKeyboardButton;
 	use Telegram\IKeyboardRow;
 
 	abstract class BaseKeyboard implements IKeyboard {
@@ -83,6 +84,42 @@
 			}
 
 			return false;
+		}
+
+		/**
+		 * Chunk and insert vector of buttons in keyboard in 'nice' and 'right' counts of rows/columns
+		 * @param IKeyboard $keyboard
+		 * @param IKeyboardButton[] $buttons
+		 * @param int|boolean $count
+		 * @return IKeyboard
+		 */
+		static function chunkVectorButtonsByRows($keyboard, $buttons, $count = false) {
+			$s = sizeOf($buttons);
+
+			if ($s <= 0) {
+				return $keyboard;
+			}
+
+			if ($count === false) {
+				$count = !($s % 4)
+					? 4
+					: (
+						!($s % 3)
+							? 3
+							: 5
+					  );
+			}
+
+			$buttons = array_chunk($buttons, $count);
+
+			foreach ($buttons as $row) {
+				$r = $keyboard->addRow();
+				foreach ($row as $button) {
+					$r->addButton($button);
+				}
+			}
+
+			return $keyboard;
 		}
 
 	}
