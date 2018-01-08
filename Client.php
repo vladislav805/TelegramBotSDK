@@ -10,6 +10,7 @@
 	use Telegram\Model\Object\Message;
 	use Telegram\Model\Response\CallbackQuery;
 	use Telegram\Model\Response\InlineQuery;
+	use Telegram\Utils\Logger;
 
 	class Client {
 
@@ -19,24 +20,10 @@
 		/** @var string */
 		private $mApiUrl;
 
-		/** @var string */
-		private $mLogFile;
-
-		/** @var int */
-		private $mLogMode;
+		/** @var Logger|null */
+		private $mLogger = null;
 
 		const BASE_URL = "https://api.telegram.org/bot%s/";
-
-		const LOG_MODE_MESSAGE = 1;
-		const LOG_MODE_CALLBACK_QUERY = 2;
-		const LOG_MODE_REVERSE = 4;
-		const LOG_MODE_INCLUDE_RAW = 8;
-		const LOG_MODE_API_RESULT = 16;
-
-		const TYPE_MESSAGE = "MSG";
-		const TYPE_CALLBACK = "CQR";
-		const TYPE_INLINE = "CIR";
-		const TYPE_RAW = "RAW";
 
 		/**
 		 * Client constructor.
@@ -83,13 +70,11 @@
 
 			$response = curl_exec($handle);
 
-			if ($this->mLogMode & self::LOG_MODE_API_RESULT) {
-				$this->log("API", [
-					"Method" => $method->getMethod(),
-					"Params" => http_build_query($parameters),
-					"Response" => $response
-				]);
-			}
+			$this->mLogger->log(Logger::LOG_MODE_API_RESULT, "API", [
+				"Method" => $method->getMethod(),
+				"Params" => http_build_query($parameters),
+				"Response" => $response
+			]);
 
 			if ($response === false) {
 				$errno = curl_errno($handle);
@@ -194,7 +179,7 @@
 			if (!$this->mData) {
 				$content = file_get_contents("php://input");
 
-				($this->mLogMode & self::LOG_MODE_INCLUDE_RAW) && $this->log(self::TYPE_RAW, ["json" => $content]);
+				$this->mLogger && $this->mLogger->log(Logger::LOG_MODE_INCLUDE_RAW, Logger::TYPE_RAW, ["json" => $content]);
 
 				$update = json_decode($content);
 
@@ -220,19 +205,22 @@
 			if (isset($this->mData->message)) {
 				$message = new Message($this->mData->message);
 				$callable($this, $message);
-				$d = [
-					"Chat" => "@" . $message->getChat()->getUsername() . " (#" . $message->getChat()->getId() . ")",
-					"From" => "@" . $message->getFrom()->getUsername() . " (#" . $message->getFrom()->getId() . ")",
-					"FN/LN" => $message->getFrom()->getFirstName() . " ! " . $message->getFrom()->getLastName(),
-					"Date" => date("d.m H:i:s", $message->getDate()),
-					"Text" => $message->getText()
-				];
 
-				if ($d["Chat"] == $d["From"]) {
-					unset($d["From"]);
+				if ($this->mLogger) {
+					$d = [
+						"Chat" => "@" . $message->getChat()->getUsername() . " (#" . $message->getChat()->getId() . ")",
+						"From" => "@" . $message->getFrom()->getUsername() . " (#" . $message->getFrom()->getId() . ")",
+						"FN/LN" => $message->getFrom()->getFirstName() . " ! " . $message->getFrom()->getLastName(),
+						"Date" => date("d.m H:i:s", $message->getDate()),
+						"Text" => $message->getText()
+					];
+
+					if ($d["Chat"] == $d["From"]) {
+						unset($d["From"]);
+					}
+
+					$this->mLogger->log(Logger::LOG_MODE_MESSAGE, Logger::TYPE_MESSAGE, $d);
 				}
-
-				($this->mLogMode & self::LOG_MODE_MESSAGE) && $this->log(self::TYPE_MESSAGE, $d);
 			}
 
 			return true;
@@ -250,7 +238,7 @@
 			if (isset($this->mData->callback_query)) {
 				$query = new CallbackQuery($this->mData->callback_query);
 				$callable($this, $query);
-				($this->mLogMode & self::LOG_MODE_CALLBACK_QUERY) && $this->log(self::TYPE_CALLBACK, [
+				$this->mLogger && $this->mLogger->log(Logger::LOG_MODE_CALLBACK_QUERY, Logger::TYPE_CALLBACK, [
 					"From" => "@" . $query->getFrom()->getUsername(),
 					"FN/LN" => $query->getFrom()->getFirstName() . " ! " . $query->getFrom()->getLastName(),
 					"Date" => date("d.m H:i:s"),
@@ -273,7 +261,7 @@
 			if (isset($this->mData->inline_query)) {
 				$query = new InlineQuery($this->mData->inline_query);
 				$callable($this, $query);
-				($this->mLogMode & self::LOG_MODE_CALLBACK_QUERY) && $this->log(self::TYPE_INLINE, [
+				$this->mLogger && $this->mLogger->log(Logger::LOG_MODE_CALLBACK_QUERY, Logger::TYPE_INLINE, [
 					"From" => "@" . $query->getFrom()->getUsername(),
 					"FN/LN" => $query->getFrom()->getFirstName() . " ! " . $query->getFrom()->getLastName(),
 					"Query" => $query->getQuery()
@@ -285,68 +273,14 @@
 
 		/**
 		 * Set logger file
-		 * @param string $filename
-		 * @param int    $mode
+		 * @param Logger $logger
 		 * @return $this
 		 */
-		public function logger($filename, $mode = 0) {
-			$this->mLogFile = $filename;
-			$this->mLogMode = $mode;
+		public function setLogger($logger) {
+			$this->mLogger = $logger;
 			return $this;
 		}
 
-		/**
-		 * Logging any actions
-		 * @param string $type
-		 * @param array $data
-		 */
-		public function log($type, $data) {
-			if (!$this->mLogFile) {
-				return;
-			}
-
-			$str = [];
-			foreach ($data as $key => $value) {
-				$str[] = $key . ": " . $value;
-			}
-
-			$log = sprintf("%s | %s", $type, join("; ", $str));
-
-			if (!file_exists($this->mLogFile)) {
-				fclose(fopen($this->mLogFile, "w+"));
-			}
-
-			$fh = fopen($this->mLogFile, "r+");
-
-			$isReverse = $this->mLogMode & self::LOG_MODE_REVERSE; // true - begin, false - end
-			$str = $isReverse ? $log . "\n" : "\n" . $log;
-			$ft = null;
-
-			$tmpFile = "tglg.tmp";
-
-			if ($isReverse) {
-				$ft = fopen($tmpFile, "w+");
-				while (!feof($fh)) {
-					fwrite($ft, fgets($fh, 4096));
-				}
-				fseek($fh, 0);
-			} else {
-				fseek($fh, 0, SEEK_END);
-			}
-
-			fwrite($fh, $str);
-
-			if ($isReverse) {
-				fseek($ft, 0, SEEK_SET);
-				while (!feof($ft)) {
-					fwrite($fh, fgets($ft, 4096));
-				}
-				fclose($ft);
-				unlink($tmpFile);
-			}
-
-			fclose($fh);
-		}
 
 		/**
 		 * Make link for download document
