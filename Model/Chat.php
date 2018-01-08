@@ -6,6 +6,7 @@
 
 	abstract class Chat implements JsonSerializable {
 
+		// TODO: remove it
 		/** @deprecated  */
 		const TYPE_USER = "private";
 
@@ -17,6 +18,7 @@
 
 		/** @deprecated  */
 		const TYPE_CHANNEL = "channel";
+
 
 		/** @var int */
 		protected $id;
@@ -90,6 +92,7 @@
 		}
 
 		/**
+		 * TODO: remove it
 		 * @deprecated
 		 * @return string
 		 */
