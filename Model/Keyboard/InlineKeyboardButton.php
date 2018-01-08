@@ -2,6 +2,8 @@
 
 	namespace Telegram\Model\Keyboard;
 
+	use Telegram\IKeyboard;
+
 	class InlineKeyboardButton extends BaseKeyboardButton {
 
 		/** @var string */
@@ -13,10 +15,11 @@
 		/**
 		 * InlineKeyboardButton constructor.
 		 * @param $text
+		 * @param IKeyboard|null $data
 		 */
-		public function __construct($text) {
+		public function __construct($text, $data = null) {
 			parent::__construct($text);
-
+			$this->setCallback($data);
 		}
 
 		/**
