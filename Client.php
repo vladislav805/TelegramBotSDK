@@ -75,7 +75,7 @@
 
 			$response = curl_exec($handle);
 
-			$this->mLogger->log(Logger::LOG_MODE_API_RESULT, "API", [
+			$this->mLogger && $this->mLogger->log(Logger::LOG_MODE_API_RESULT, "API", [
 				"Method" => $method->getMethod(),
 				"Params" => http_build_query($parameters),
 				"Response" => $response
