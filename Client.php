@@ -210,7 +210,7 @@
 					$d = [
 						"Chat" => "@" . $message->getChat()->getUsername() . " (#" . $message->getChat()->getId() . ")",
 						"From" => "@" . $message->getFrom()->getUsername() . " (#" . $message->getFrom()->getId() . ")",
-						"FN/LN" => $message->getFrom()->getFirstName() . " ! " . $message->getFrom()->getLastName(),
+						"FN/LN" => $message->getFrom()->getFullName(),
 						"Date" => date("d.m H:i:s", $message->getDate()),
 						"Text" => $message->getText()
 					];
@@ -240,7 +240,7 @@
 				$callable($this, $query);
 				$this->mLogger && $this->mLogger->log(Logger::LOG_MODE_CALLBACK_QUERY, Logger::TYPE_CALLBACK, [
 					"From" => "@" . $query->getFrom()->getUsername(),
-					"FN/LN" => $query->getFrom()->getFirstName() . " ! " . $query->getFrom()->getLastName(),
+					"FN/LN" => $query->getFrom()->getFullName(),
 					"Date" => date("d.m H:i:s"),
 					"Data" => $query->getData()
 				]);
@@ -263,7 +263,7 @@
 				$callable($this, $query);
 				$this->mLogger && $this->mLogger->log(Logger::LOG_MODE_CALLBACK_QUERY, Logger::TYPE_INLINE, [
 					"From" => "@" . $query->getFrom()->getUsername(),
-					"FN/LN" => $query->getFrom()->getFirstName() . " ! " . $query->getFrom()->getLastName(),
+					"FN/LN" => $query->getFrom()->getFullName(),
 					"Query" => $query->getQuery()
 				]);
 			}
