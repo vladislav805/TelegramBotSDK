@@ -36,6 +36,6 @@
 		 * @return Message
 		 */
 		public function parseResponse($result) {
-			return new Message($result->result);
+			return new Message($result);
 		}
 	}
