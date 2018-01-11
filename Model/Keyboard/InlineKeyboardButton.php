@@ -48,11 +48,11 @@
 
 			if ($this->callbackData) {
 				$d["callback_data"] = $this->callbackData;
-			} /*elseif ($this->url) {
-				$d["url"] = $this->url;
-			}*/
+			}
 
-			// TODO: fix it
+			if ($this->url) {
+				$d["url"] = $this->url;
+			}
 
 			return $d;
 		}
