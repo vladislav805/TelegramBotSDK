@@ -64,6 +64,13 @@
 		}
 
 		/**
+		 * @return int
+		 */
+		public function getMessageId() {
+			return $this->message->getId();
+		}
+
+		/**
 		 * @return string
 		 */
 		public function getChatInstance() {
@@ -75,6 +82,13 @@
 		 */
 		public function getQueryId() {
 			return $this->queryId;
+		}
+
+		/**
+		 * @return int
+		 */
+		public function getChatId() {
+			return $this->getFrom()->getId();
 		}
 
 	}
