@@ -43,7 +43,7 @@
 		/**
 		 * Perform method as single HTTP-request
 		 * @param BaseMethod $method
-		 * @return stdClass
+		 * @return mixed
 		 * @throws Exception
 		 */
 		public function performSingleMethod(BaseMethod $method) {
