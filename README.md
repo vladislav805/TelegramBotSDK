@@ -42,3 +42,49 @@ $tg->onMessage(function(Telegram\Client $tg, Telegram\Model\Message $message) {
     exit; // prevent output unnecessary data and stop script
 });
 ```
+
+## Using keyboard in message
+### Create keyboard
+... and send it in message
+```php
+use Telegram\Model\Keyboard\InlineKeyboard;
+use Telegram\Model\Keyboard\InlineKeyboardButton;
+use Telegram\Method\SendMessage;
+
+// ...
+
+// create keyboard
+$keyboard = new InlineKeyboard;
+
+// create row in keyboard
+$row = $keyboard->addRow();
+
+// create button
+$button = new InlineKeyboardButton("Awesome button");
+// set callback data
+$button->setCallback("sayHello");
+
+// create message
+$reply = new SendMessage($message->getChatId());
+// set text
+$reply->setText("Click on button below");
+// set keyboard in message
+$reply->setReplyMarkup($keyboard);
+// send message
+$tg->performSingleMethod($reply);
+```
+
+### Catch click on button in CallbackQuery
+```php
+$tg->onCallbackQuery(function(Telegram\Client $tg, Telegram\Model\Response\CallbackQuery $query) {
+    if ($query->getData() === "sayHello") {
+        $upd = new EditMessageText(
+            $query->getChatId(),
+            $query->getMessageId());
+            
+        $upd->setText("Hello, world!");
+        
+        $tg->performHookMethod($upd);
+    }
+});
+```
