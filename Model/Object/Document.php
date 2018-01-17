@@ -27,9 +27,9 @@
 
 		public function __construct($d) {
 			$this->fileId = $d->file_id;
-			$this->thumbnail = $d->thumb;
-			$this->name = $d->file_name;
-			$this->mime = $d->mime_type;
+			isset($d->thumb) && ($this->thumbnail = $d->thumb);
+			isset($d->file_name) && $this->name = $d->file_name;
+			isset($d->mime_type) && $this->mime = $d->mime_type;
 			$this->size = $d->file_size;
 			isset($d->file_path) && ($this->path = $d->file_path);
 		}
