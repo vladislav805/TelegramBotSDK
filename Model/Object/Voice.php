@@ -3,7 +3,6 @@
 	namespace Telegram\Model\Object;
 
 	use JsonSerializable;
-	use RuntimeException;
 	use Telegram\IFile;
 
 	class Voice implements IFile, JsonSerializable {
@@ -73,10 +72,4 @@
 			return $this->size;
 		}
 
-		/**
-		 * @return string
-		 */
-		public function getPath() {
-			throw new RuntimeException();
-		}
 	}

@@ -14,9 +14,4 @@
 		 */
 		public function getFileSize();
 
-		/**
-		 * @return string
-		 */
-		public function getPath();
-
 	}

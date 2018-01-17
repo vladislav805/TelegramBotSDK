@@ -1,12 +1,13 @@
 <?
 	namespace Telegram;
 
+	use BadFunctionCallException;
 	use CURLFile;
 	use ErrorException;
 	use Exception;
 	use RuntimeException;
-	use stdClass;
 	use Telegram\Method\BaseMethod;
+	use Telegram\Model\Object\FullDocument;
 	use Telegram\Model\Object\Message;
 	use Telegram\Model\Response\CallbackQuery;
 	use Telegram\Model\Response\InlineQuery;
@@ -264,10 +265,13 @@
 
 		/**
 		 * Make link for download document
-		 * @param IFile $document
+		 * @param FullDocument $document
 		 * @return string
 		 */
 		public function getDocumentDownloadUrl($document) {
+			if (!($document instanceof FullDocument)) {
+				throw new BadFunctionCallException("Document will be FullDocument instance.");
+			}
 			return "https://api.telegram.org/file/bot" . $this->mBotSecret . "/" . $document->getPath();
 		}
 

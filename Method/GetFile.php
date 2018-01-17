@@ -2,7 +2,7 @@
 	namespace Telegram\Method;
 
 	use Telegram\IMethodParsable;
-	use Telegram\Model\Object\Document;
+	use Telegram\Model\Object\FullDocument;
 
 	class GetFile extends BaseMethod implements IMethodParsable {
 
@@ -24,9 +24,9 @@
 		/**
 		 * Parse response from API to objects
 		 * @param object $result
-		 * @return mixed
+		 * @return FullDocument
 		 */
 		public function parseResponse($result) {
-			return new Document($result);
+			return new FullDocument($result);
 		}
 	}

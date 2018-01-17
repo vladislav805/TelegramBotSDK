@@ -69,10 +69,4 @@
 			return get_object_vars($this);
 		}
 
-		/**
-		 * @return string
-		 */
-		public function getPath() {
-			return $this->path;
-		}
 	}
