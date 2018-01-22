@@ -2,6 +2,7 @@
 
 	namespace Telegram\Model\Keyboard;
 
+	use InvalidArgumentException;
 	use Telegram\IKeyboard;
 	use Telegram\IKeyboardButton;
 	use Telegram\IKeyboardRow;
@@ -95,6 +96,10 @@
 		 */
 		static function chunkVectorButtonsByRows($keyboard, $buttons, $count = false) {
 			$s = sizeOf($buttons);
+
+			if ($s > 50) {
+				throw new InvalidArgumentException("Too many buttons. Max count 50 buttons per menu.");
+			}
 
 			if ($s <= 0) {
 				return $keyboard;
