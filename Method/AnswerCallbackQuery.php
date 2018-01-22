@@ -22,8 +22,9 @@
 		 * AnswerCallbackQuery constructor.
 		 * @param string $queryId
 		 */
-		public function __construct($queryId) {
+		public function __construct($queryId, $text) {
 			$this->queryId = $queryId;
+			$this->text = $text;
 		}
 
 		/**
@@ -62,13 +63,52 @@
 		}
 
 		/**
+		 * @param string $text
+		 * @return AnswerCallbackQuery
+		 */
+		public function setText($text) {
+			$this->text = $text;
+			return $this;
+		}
+
+		/**
+		 * @param boolean $showAlert
+		 * @return AnswerCallbackQuery
+		 */
+		public function setShowAlert($showAlert) {
+			$this->showAlert = $showAlert;
+			return $this;
+		}
+
+		/**
+		 * @param string $url
+		 * @return AnswerCallbackQuery
+		 */
+		public function setUrl($url) {
+			$this->url = $url;
+			return $this;
+		}
+
+		/**
+		 * @param int $cacheTime
+		 * @return AnswerCallbackQuery
+		 */
+		public function setCacheTime($cacheTime) {
+			$this->cacheTime = $cacheTime;
+			return $this;
+		}
+
+		/**
 		 * @return array
 		 */
 		public function getParams() {
-			$res = [ "query_callback_id" => $this->queryId, "show_alert" => $this->showAlert, "cache_time" => $this->cacheTime ];
-			if ($this->text) {
-				$res["text"] = $this->text;
-			}
+			$res = [
+				"query_callback_id" => $this->queryId,
+				"show_alert" => $this->showAlert,
+				"cache_time" => $this->cacheTime,
+				"text" => $this->text
+			];
+
 			if ($this->url) {
 				$res["url"] = $this->url;
 			}
