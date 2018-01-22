@@ -2,16 +2,18 @@
 	namespace Telegram;
 
 	use BadFunctionCallException;
+	use BadMethodCallException;
 	use CURLFile;
-	use ErrorException;
 	use Exception;
-	use RuntimeException;
+	use InvalidArgumentException;
 	use Telegram\Method\BaseMethod;
+	use Telegram\Model\Error;
 	use Telegram\Model\Object\FullDocument;
 	use Telegram\Model\Object\Message;
 	use Telegram\Model\Response\CallbackQuery;
 	use Telegram\Model\Response\InlineQuery;
 	use Telegram\Utils\Logger;
+	use UnexpectedValueException;
 
 	class Client {
 
@@ -45,19 +47,18 @@
 		 * Perform method as single HTTP-request
 		 * @param BaseMethod $method
 		 * @return mixed
-		 * @throws Exception
 		 */
 		public function performSingleMethod(BaseMethod $method) {
 			$parameters = $method->getParams();
 
 			if (!is_string($method->getMethod())) {
-				throw new InvalidParamException("Method name must be a string");
+				throw new BadMethodCallException("Method name must be a string");
 			};
 
 			if (!$parameters) {
 				$parameters = [];
 			} else if (!is_array($parameters) && !is_object($parameters)) {
-				throw new InvalidParamException("Parameters must be an array");
+				throw new BadMethodCallException("Parameters must be an array");
 			}
 
 			$parameters["method"] = $method->getMethod();
@@ -86,22 +87,20 @@
 				$errno = curl_errno($handle);
 				$error = curl_error($handle);
 				curl_close($handle);
-				throw new RuntimeException("Curl returned error $errno: $error");
+				throw new UnexpectedValueException("Curl returned error $errno: $error");
 			}
 
 			$httpCode = (int) curl_getinfo($handle, CURLINFO_HTTP_CODE);
 			curl_close($handle);
 
 			if ($httpCode >= 500) {
-				throw new RuntimeException("Telegram API respond with " . $httpCode . " HTTP code");
-			} elseif ($httpCode !== 200) {
-				throw new RuntimeException("Telegram API respond with " . $httpCode . " HTTP code and reason: " . $response);
-			};
-
+				throw new UnexpectedValueException("Telegram API respond with " . $httpCode . " HTTP code");
+			}
 
 			$response = json_decode($response);
+
 			if (!$response->ok) {
-				throw new ErrorException(json_encode($response));
+				throw new Error($response);
 			}
 
 			return $method instanceof IMethodParsable
@@ -112,22 +111,22 @@
 		/**
 		 * Perform method as webhook
 		 * @param BaseMethod $method
-		 * @return bool
+		 * @return boolean
 		 */
 		public function performHookMethod(BaseMethod $method) {
 			$parameters = $method->getParams();
 			if (!is_string($method->getMethod())) {
-				throw new InvalidParamException("Method name must be a string");
+				throw new BadMethodCallException("Method name must be a string");
 			}
 
 			if (!$parameters) {
 				$parameters = [];
 			} else if (!is_array($parameters)) {
-				throw new InvalidParamException("Parameters must be an array");
+				throw new BadMethodCallException("Parameters must be an array");
 			}
 
 			if ($this->hasFile($parameters)) {
-				throw new InvalidParamException("File can not be sent on webhook");
+				throw new InvalidArgumentException("File can not be sent on webhook");
 			}
 
 			$parameters["method"] = $method->getMethod();
@@ -160,7 +159,7 @@
 			if (!$this->mData) {
 				$content = file_get_contents("php://input");
 
-				$this->mLogger && $this->mLogger->log(Logger::LOG_MODE_INCLUDE_RAW, Logger::TYPE_RAW, ["json" => $content]);
+				$this->mLogger && $this->mLogger->log(Logger::LOG_MODE_INCLUDE_RAW, Logger::TYPE_RAW, $content);
 
 				$update = json_decode($content);
 
