@@ -103,7 +103,7 @@
 		 */
 		public function getParams() {
 			$res = [
-				"query_callback_id" => $this->queryId,
+				"callback_query_id" => $this->queryId,
 				"show_alert" => $this->showAlert,
 				"cache_time" => $this->cacheTime,
 				"text" => $this->text
