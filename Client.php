@@ -159,7 +159,7 @@
 			if (!$this->mData) {
 				$content = file_get_contents("php://input");
 
-				$this->mLogger && $this->mLogger->log(Logger::LOG_MODE_INCLUDE_RAW, Logger::TYPE_RAW, $content);
+				$this->mLogger && $this->mLogger->log(Logger::LOG_MODE_INCLUDE_RAW, Logger::TYPE_RAW, ["raw" => $content]);
 
 				$update = json_decode($content);
 

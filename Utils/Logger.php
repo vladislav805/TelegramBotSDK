@@ -41,7 +41,7 @@
 				return;
 			}
 
-			if (!$this->mLogFile) {
+			if (!$this->mLogFile || !$data) {
 				return;
 			}
 
