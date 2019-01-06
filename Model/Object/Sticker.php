@@ -18,8 +18,8 @@
 		 */
 		public function __construct($d) {
 			parent::__construct($d);
-			$this->thumbnail = $d->thumb;
-			$this->emoji = $d->emoji;
+			isset($d->thumb) && ($this->thumbnail = $d->thumb);
+			isset($d->emoji) && ($this->emoji = $d->emoji);
 		}
 
 		/**

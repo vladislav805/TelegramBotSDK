@@ -4,13 +4,14 @@
 
 	use JsonSerializable;
 	use Telegram\Model\Chat;
+	use Telegram\Model\User;
 
 	class Message implements JsonSerializable {
 
 		/** @var int */
 		protected $id;
 
-		/** @var Chat */
+		/** @var User */
 		protected $from;
 
 		/** @var Chat */
@@ -28,6 +29,9 @@
 		/** @var Document */
 		protected $document;
 
+		/** @var Audio */
+		protected $audio;
+
 		/** @var Voice */
 		protected $voice;
 
@@ -37,11 +41,14 @@
 		/** @var Sticker */
 		protected $sticker;
 
+		/** @var Location */
+		protected $location;
+
 		/** @var Message */
 		protected $replyToMessage;
 
 		/** @var Chat */
-		protected $forwardFrom = null;
+		protected $forwardFrom;
 
 		/** @var int */
 		protected $forwardFromMessageId;
@@ -66,10 +73,13 @@
 
 			isset($d->photo) && ($this->photo = array_map(function($p) { return new PhotoSize($p); }, $d->photo));
 			isset($d->document) && ($this->document = new Document($d->document));
+			isset($d->voice) && ($this->voice = new Voice($d->voice));
+			isset($d->audio) && ($this->audio = new Audio($d->audio));
 			isset($d->sticker) && ($this->sticker = new Sticker($d->sticker));
+			isset($d->location) && ($this->location = new Location($d->location));
 
-			if (isset($d->forward_from_chat))  {
-				$this->forwardFrom = Chat::parse($d->forward_from_chat);
+			if (isset($d->forward_date))  {
+				$this->forwardFrom = Chat::parse($d->forward_from);
 				$this->forwardDate = $d->forward_date;
 			}
 
@@ -107,7 +117,7 @@
 		}
 
 		/**
-		 * @return Chat
+		 * @return User
 		 */
 		public function getFrom() {
 			return $this->from;
@@ -216,6 +226,20 @@
 		 */
 		public function getVoice() {
 			return $this->voice;
+		}
+
+		/**
+		 * @return Audio
+		 */
+		public function getAudio() {
+			return $this->audio;
+		}
+
+		/**
+		 * @return Location
+		 */
+		public function getLocation() {
+			return $this->location;
 		}
 
 		/**

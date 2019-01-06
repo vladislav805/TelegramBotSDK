@@ -27,6 +27,9 @@
 			if ($this->parseMode) {
 				$res["parse_mode"] = $this->parseMode;
 			}
+			if ($this->disableWebPagePreview) {
+				$res["disable_web_page_preview"] = $this->disableWebPagePreview;
+			}
 			return $res;
 		}
 

@@ -4,7 +4,7 @@
 
 	class Supergroup extends Chat {
 
-		public function __construct(object $d) {
+		public function __construct($d) {
 			parent::__construct($d);
 		}
 

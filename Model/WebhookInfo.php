@@ -32,8 +32,8 @@
 			$this->url = $d->url;
 			$this->hasCustomCertificate = $d->has_custom_certificate;
 			$this->pendingUpdateCount = $d->pending_update_count;
-			$this->lastErrorDate = $d->last_error_date;
-			$this->lastErrorMessage = $d->last_error_message;
+			isset($d->last_error_date) && ($this->lastErrorDate = $d->last_error_date);
+			isset($d->last_error_message) && ($this->lastErrorMessage = $d->last_error_message);
 			$this->maxConnections = $d->max_connections;
 		}
 

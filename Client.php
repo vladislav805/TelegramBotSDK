@@ -207,6 +207,40 @@
 		}
 
 		/**
+		 * Set listener for edit Message
+		 * @param callable $callable
+		 * @return bool
+		 * @throws Exception
+		 */
+		public function onEditedMessage($callable) {
+			$this->read();
+
+			if (isset($this->mData->edited_message)) {
+				$message = new Message($this->mData->edited_message);
+				$callable($this, $message);
+
+				if ($this->mLogger) {
+					$d = [
+						"EDITED" => "1",
+						"Chat" => "@" . $message->getChat()->getUsername() . " (#" . $message->getChat()->getId() . ")",
+						"From" => "@" . $message->getFrom()->getUsername() . " (#" . $message->getFrom()->getId() . ")",
+						"FN/LN" => $message->getFrom()->getFullName(),
+						"Date" => date("d.m H:i:s", $message->getDate()),
+						"Text" => $message->getText()
+					];
+
+					if ($d["Chat"] == $d["From"]) {
+						unset($d["From"]);
+					}
+
+					$this->mLogger->log(Logger::LOG_MODE_MESSAGE, Logger::TYPE_MESSAGE, $d);
+				}
+			}
+
+			return true;
+		}
+
+		/**
 		 * Set listener for callback query
 		 * @param callable $callable
 		 * @return boolean
